@@ -1,0 +1,380 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // 1. GLOBAL SAFETY NET — Default-Deny Catch-All
+    // =========================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // =========================================================================
+    // 2. HARDENED PRIMITIVE HELPERS
+    // =========================================================================
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isBootstrappedOwner() {
+      return isVerified() && request.auth.token.email == 'ishvarkalwa001@gmail.com';
+    }
+
+    // Bootstrapped Studio Owner + Trusted Admin Collection Lookup (Never used in list)
+    function isAdmin() {
+      return isBootstrappedOwner() || (
+        isVerified() && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidCategoryEnum(cat) {
+      return cat is string && cat.size() >= 1 && cat.size() <= 64 && cat in [
+        'console-table',
+        'lander',
+        'side-tables',
+        'dining-tables',
+        'fireplace',
+        'pedistal',
+        'washbasin',
+        'other-beautiful-handicrafts'
+      ];
+    }
+
+    function isBoundedStringList(arr, minItems, maxItems, maxStrLen) {
+      return arr is list &&
+        arr.size() >= minItems &&
+        arr.size() <= maxItems &&
+        (arr.size() == 0 || (arr[0] is string && arr[0].size() >= 1 && arr[0].size() <= maxStrLen));
+    }
+
+    // =========================================================================
+    // 3. ENTITY VALIDATION BLUEPRINTS (Anti-Update-Gap)
+    // =========================================================================
+    function isValidProduct(data) {
+      return data.keys().hasAll([
+          'id',
+          'name',
+          'category',
+          'categoryLabel',
+          'quantity',
+          'material',
+          'imageFitMode',
+          'price',
+          'subtitle',
+          'origin',
+          'finishes',
+          'standardFormat',
+          'thickness',
+          'applications',
+          'description',
+          'image',
+          'detailImage',
+          'images',
+          'bookmatched',
+          'featured',
+          'isPublic',
+          'authorId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'id',
+          'name',
+          'category',
+          'categoryLabel',
+          'quantity',
+          'material',
+          'imageFitMode',
+          'price',
+          'subtitle',
+          'origin',
+          'finishes',
+          'standardFormat',
+          'thickness',
+          'applications',
+          'description',
+          'image',
+          'detailImage',
+          'images',
+          'bookmatched',
+          'featured',
+          'isPublic',
+          'authorId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        isValidId(data.id) &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 200 &&
+        isValidCategoryEnum(data.category) &&
+        data.categoryLabel is string && data.categoryLabel.size() >= 1 && data.categoryLabel.size() <= 100 &&
+        data.quantity is string && data.quantity.size() >= 1 && data.quantity.size() <= 100 &&
+        data.material is string && data.material.size() >= 1 && data.material.size() <= 200 &&
+        data.imageFitMode is string && data.imageFitMode.size() >= 1 && data.imageFitMode.size() <= 32 &&
+        data.imageFitMode in ['original', 'edge-to-edge'] &&
+        data.price is string && data.price.size() >= 1 && data.price.size() <= 100 &&
+        data.subtitle is string && data.subtitle.size() <= 300 &&
+        data.origin is string && data.origin.size() <= 200 &&
+        isBoundedStringList(data.finishes, 0, 10, 100) &&
+        data.standardFormat is string && data.standardFormat.size() <= 200 &&
+        data.thickness is string && data.thickness.size() <= 100 &&
+        isBoundedStringList(data.applications, 0, 10, 100) &&
+        data.description is string && data.description.size() <= 2000 &&
+        data.image is string && data.image.size() >= 1 && data.image.size() <= 1500 &&
+        data.detailImage is string && data.detailImage.size() <= 1500 &&
+        isBoundedStringList(data.images, 1, 10, 1500) &&
+        data.bookmatched is bool &&
+        data.featured is bool &&
+        data.isPublic is bool &&
+        isValidId(data.authorId) &&
+        data.authorId == request.auth.uid &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidCategory(data) {
+      return data.keys().hasAll([
+          'id',
+          'label',
+          'icon',
+          'description',
+          'isPublic',
+          'authorId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'id',
+          'label',
+          'icon',
+          'description',
+          'isPublic',
+          'authorId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        isValidId(data.id) &&
+        isValidCategoryEnum(data.id) &&
+        data.label is string && data.label.size() >= 1 && data.label.size() <= 100 &&
+        data.icon is string && data.icon.size() >= 1 && data.icon.size() <= 64 &&
+        data.description is string && data.description.size() >= 1 && data.description.size() <= 600 &&
+        data.isPublic is bool &&
+        isValidId(data.authorId) &&
+        data.authorId == request.auth.uid &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidAdmin(data) {
+      return data.keys().hasAll(['uid', 'email', 'createdAt']) &&
+        data.keys().hasOnly(['uid', 'email', 'createdAt']) &&
+        isValidId(data.uid) &&
+        data.uid == request.auth.uid &&
+        data.email is string && data.email.size() >= 3 && data.email.size() <= 200 &&
+        data.createdAt is timestamp;
+    }
+
+    function isValidEnquiry(data) {
+      return data.keys().hasAll([
+          'id',
+          'name',
+          'phone',
+          'company',
+          'projectType',
+          'material',
+          'quantity',
+          'message',
+          'status',
+          'authorId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        data.keys().hasOnly([
+          'id',
+          'name',
+          'phone',
+          'company',
+          'projectType',
+          'material',
+          'quantity',
+          'message',
+          'status',
+          'authorId',
+          'createdAt',
+          'updatedAt'
+        ]) &&
+        isValidId(data.id) &&
+        data.name is string && data.name.size() >= 1 && data.name.size() <= 120 &&
+        data.phone is string && data.phone.size() >= 5 && data.phone.size() <= 40 &&
+        data.company is string && data.company.size() <= 150 &&
+        data.projectType is string && data.projectType.size() >= 1 && data.projectType.size() <= 100 &&
+        data.material is string && data.material.size() >= 1 && data.material.size() <= 200 &&
+        data.quantity is string && data.quantity.size() <= 100 &&
+        data.message is string && data.message.size() <= 2000 &&
+        data.status is string && data.status.size() >= 1 && data.status.size() <= 32 &&
+        data.status in ['new', 'reviewed', 'completed'] &&
+        isValidId(data.authorId) &&
+        data.authorId == request.auth.uid &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    // =========================================================================
+    // 4. COLLECTION MATCH BLOCKS (Zero get()/exists() inside list blocks)
+    // =========================================================================
+
+    // A. Products Showcase Collection (/products/{productId})
+    match /products/{productId} {
+      allow get: if isValidId(productId) && (existing().isPublic == true || isAdmin());
+      allow list: if existing().isPublic == true || (isVerified() && existing().authorId == request.auth.uid);
+
+      allow create: if isVerified() &&
+        isValidId(productId) &&
+        isValidProduct(incoming()) &&
+        incoming().id == productId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        isAdmin();
+
+      allow update: if isVerified() &&
+        isValidId(productId) &&
+        isValidProduct(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().authorId == existing().authorId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          // Action 1: Admin Catalog Content Update
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'name',
+            'category',
+            'categoryLabel',
+            'price',
+            'subtitle',
+            'origin',
+            'finishes',
+            'standardFormat',
+            'thickness',
+            'applications',
+            'description',
+            'image',
+            'detailImage',
+            'images',
+            'bookmatched',
+            'featured',
+            'isPublic',
+            'updatedAt'
+          ])) ||
+          // Action 2: Admin Visibility Toggle
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'isPublic',
+            'updatedAt'
+          ]))
+        );
+
+      allow delete: if isVerified() && isValidId(productId) && isAdmin();
+    }
+
+    // B. Categories Collection (/categories/{categoryId})
+    match /categories/{categoryId} {
+      allow get: if isValidId(categoryId) && (existing().isPublic == true || isAdmin());
+      allow list: if existing().isPublic == true || (isVerified() && existing().authorId == request.auth.uid);
+
+      allow create: if isVerified() &&
+        isValidId(categoryId) &&
+        isValidCategory(incoming()) &&
+        incoming().id == categoryId &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        isAdmin();
+
+      allow update: if isVerified() &&
+        isValidId(categoryId) &&
+        isValidCategory(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().authorId == existing().authorId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time && (
+          // Action: Admin Category Description / Metadata Update
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly([
+            'label',
+            'icon',
+            'description',
+            'isPublic',
+            'updatedAt'
+          ]))
+        );
+
+      allow delete: if isVerified() && isValidId(categoryId) && isAdmin();
+    }
+
+    // C. Trusted Studio Administrators (/admins/{adminUid})
+    match /admins/{adminUid} {
+      allow get: if isVerified() && isValidId(adminUid) && (request.auth.uid == adminUid || isAdmin());
+      allow list: if false;
+
+      allow create: if isVerified() &&
+        isValidId(adminUid) &&
+        isValidAdmin(incoming()) &&
+        incoming().uid == adminUid &&
+        incoming().createdAt == request.time &&
+        isAdmin();
+
+      allow update: if false;
+      allow delete: if isVerified() && isValidId(adminUid) && isAdmin();
+    }
+
+    // D. Customer Enquiries Collection — PII Isolated (/enquiries/{enquiryId})
+    match /enquiries/{enquiryId} {
+      allow get: if isVerified() && isValidId(enquiryId) && (
+        existing().authorId == request.auth.uid || isAdmin()
+      );
+
+      allow list: if isVerified() && (
+        existing().authorId == request.auth.uid || isBootstrappedOwner()
+      );
+
+      allow create: if isVerified() &&
+        isValidId(enquiryId) &&
+        isValidEnquiry(incoming()) &&
+        incoming().id == enquiryId &&
+        incoming().status == 'new' &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+
+      allow update: if isVerified() &&
+        isValidId(enquiryId) &&
+        isValidEnquiry(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().authorId == existing().authorId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        (existing().status != 'completed' || isAdmin()) && (
+          // Action 1: Owner updates message or quantity before completion
+          (existing().authorId == request.auth.uid &&
+            incoming().status == existing().status &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['message', 'quantity', 'updatedAt'])) ||
+          // Action 2: Admin updates workflow status
+          (isAdmin() &&
+            incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt']))
+        );
+
+      allow delete: if isVerified() && isValidId(enquiryId) && isAdmin();
+    }
+  }
+}

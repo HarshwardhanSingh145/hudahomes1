@@ -1,0 +1,392 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "A handcrafted marble or architectural stone piece in the HUDA HOMES showcase.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique slug/ID of the product."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Display title of the marble or stone product."
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "console-table",
+            "lander",
+            "side-tables",
+            "dining-tables",
+            "fireplace",
+            "pedistal",
+            "washbasin",
+            "other-beautiful-handicrafts"
+          ],
+          "maxLength": 64,
+          "description": "One of the 8 signature showcase categories."
+        },
+        "categoryLabel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Human-readable category name."
+        },
+        "quantity": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Product quantity with unit (e.g., 1 Piece, 2 Units, 1 Set)."
+        },
+        "material": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Marble or natural stone material name."
+        },
+        "imageFitMode": {
+          "type": "string",
+          "enum": [
+            "original",
+            "edge-to-edge"
+          ],
+          "maxLength": 32,
+          "description": "Controls whether the product photograph is showcased in its original aspect ratio or edge-to-edge."
+        },
+        "price": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Formatted price string or Price on Request."
+        },
+        "subtitle": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Short stone veining and craftsmanship summary."
+        },
+        "origin": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Quarry or geographical stone origin."
+        },
+        "finishes": {
+          "type": "array",
+          "maxLength": 10,
+          "description": "Bounded list of available surface finishes."
+        },
+        "standardFormat": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "Standard dimensions or slab format."
+        },
+        "thickness": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Available stone thickness."
+        },
+        "applications": {
+          "type": "array",
+          "maxLength": 10,
+          "description": "Bounded list of architectural applications."
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Full editorial description of the piece."
+        },
+        "image": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1500,
+          "description": "Primary cover photograph URL."
+        },
+        "detailImage": {
+          "type": "string",
+          "maxLength": 1500,
+          "description": "Secondary detail photograph URL."
+        },
+        "images": {
+          "type": "array",
+          "maxLength": 10,
+          "description": "Bounded list of product photograph URLs."
+        },
+        "bookmatched": {
+          "type": "boolean",
+          "description": "Whether the piece features bookmatched veining."
+        },
+        "featured": {
+          "type": "boolean",
+          "description": "Whether the piece is highlighted."
+        },
+        "isPublic": {
+          "type": "boolean",
+          "description": "Whether the product is published for public showcase queries."
+        },
+        "authorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of the admin who created or updated the product."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "category",
+        "categoryLabel",
+        "quantity",
+        "material",
+        "imageFitMode",
+        "price",
+        "subtitle",
+        "origin",
+        "finishes",
+        "standardFormat",
+        "thickness",
+        "applications",
+        "description",
+        "image",
+        "detailImage",
+        "images",
+        "bookmatched",
+        "featured",
+        "isPublic",
+        "authorId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "One of the 8 signature product showcase categories.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "enum": [
+            "console-table",
+            "lander",
+            "side-tables",
+            "dining-tables",
+            "fireplace",
+            "pedistal",
+            "washbasin",
+            "other-beautiful-handicrafts"
+          ],
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Category identifier."
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Display label for the category."
+        },
+        "icon": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "Icon name for the category."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 600,
+          "description": "Showcase description for the category."
+        },
+        "isPublic": {
+          "type": "boolean",
+          "description": "Whether the category is visible in the public showcase."
+        },
+        "authorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of the admin who manages the category."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp."
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "icon",
+        "description",
+        "isPublic",
+        "authorId",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Admin": {
+      "title": "Admin",
+      "description": "Authorized studio administrator record.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID of the administrator."
+        },
+        "email": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 200,
+          "description": "Verified email address of the administrator."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        }
+      },
+      "required": ["uid", "email", "createdAt"]
+    },
+    "Enquiry": {
+      "title": "Enquiry",
+      "description": "Customer architectural stone enquiry containing private contact details.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Unique enquiry identifier."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Client full name."
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 5,
+          "maxLength": 40,
+          "description": "Client phone / WhatsApp number (PII)."
+        },
+        "company": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Client studio or firm name."
+        },
+        "projectType": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100,
+          "description": "Architectural project classification."
+        },
+        "material": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "Requested stone or product name."
+        },
+        "quantity": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Estimated quantity or dimensions."
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Project requirements and notes."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["new", "reviewed", "completed"],
+          "maxLength": 32,
+          "description": "Workflow status of the enquiry."
+        },
+        "authorId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of the authenticated submitter or admin."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server update timestamp."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "phone",
+        "company",
+        "projectType",
+        "material",
+        "quantity",
+        "message",
+        "status",
+        "authorId",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": {
+        "$ref": "#/entities/Product"
+      },
+      "description": "Published marble and stone products across the 8 showcase categories."
+    },
+    "/categories/{categoryId}": {
+      "schema": {
+        "$ref": "#/entities/Category"
+      },
+      "description": "Metadata and descriptions for the 8 signature product categories."
+    },
+    "/admins/{adminUid}": {
+      "schema": {
+        "$ref": "#/entities/Admin"
+      },
+      "description": "Trusted administrator directory for studio management."
+    },
+    "/enquiries/{enquiryId}": {
+      "schema": {
+        "$ref": "#/entities/Enquiry"
+      },
+      "description": "Customer project enquiries containing PII isolated to owner and admin access."
+    }
+  }
+}

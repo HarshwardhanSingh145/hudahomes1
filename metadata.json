@@ -1,0 +1,6 @@
+{
+  "name": "HUDA HOMES — Premium Marble, Stone & Tiles",
+  "description": "Luxury architectural surfaces, timeless Italian marble, natural stone slabs, porcelain and ceramic tiles by HUDA HOMES.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,433 @@
+@import "tailwindcss";
+
+:root {
+  --gradient-lavender: #96849C;
+  --gradient-mauve: #B39499;
+  --gradient-rose-peach: #C39894;
+  --gradient-peach: #D49C8B;
+  --gradient-apricot: #E9A57D;
+  --gradient-orange: #F4A06A;
+  --gradient-coral: #F68B55;
+  --gradient-deep-coral: #F55B31;
+
+  --background-camel: #B2967D;
+  --background-camel-deep: #9B7E66;
+  --surface-alabaster: #FAF7F2;
+  --surface-ivory: #F3EDE2;
+  --border-warm: rgba(58, 38, 24, 0.12);
+  --text-primary: #FFFFFF;
+  --text-cream: #FAF6F0;
+  --text-card-primary: #231C16;
+  --text-card-secondary: #5E4E40;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #B2967D;
+  color: #ffffff;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-manrope), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+  background-color: #B2967D;
+  color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Touch and momentum scrolling optimization */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.catalogue-card {
+  contain: layout paint;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #B2967D;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(250, 247, 242, 0.45);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(245, 91, 49, 0.75);
+}
+
+/* Selection style */
+::selection {
+  background-color: rgba(245, 91, 49, 0.35);
+  color: #ffffff;
+}
+
+/* ========================================================
+   HERO 3D VOLUMETRIC LIVING GRADIENT
+   Organic, luminous 3D color depth without crossing lines or X-shapes
+   ======================================================== */
+
+.hero-background {
+  position: relative;
+  min-height: 100svh;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--gradient-deep-coral);
+  isolation: isolate;
+  perspective: 1200px;
+
+  /* Baseline fallback gradient */
+  background: linear-gradient(
+    180deg,
+    #96849C 0%,
+    #B39499 15%,
+    #C39894 28%,
+    #D49C8B 42%,
+    #E9A57D 58%,
+    #F4A06A 72%,
+    #F68B55 86%,
+    #F55B31 100%
+  );
+}
+
+/* Layer 1: Base Smooth Vertical Foundation — Fast, fluid vertical color shift */
+.hero-gradient-layer-base {
+  background: linear-gradient(
+    180deg,
+    #96849C 0%,
+    #B39499 14%,
+    #C39894 28%,
+    #D49C8B 42%,
+    #E9A57D 57%,
+    #F4A06A 71%,
+    #F68B55 86%,
+    #F55B31 100%
+  );
+  background-size: 100% 250%;
+  animation: hero3dVerticalBase 2.4s ease-in-out infinite alternate;
+  will-change: background-position;
+}
+
+@keyframes hero3dVerticalBase {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 0% 60%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+/* Layer 2: 3D Volumetric Floating Spheres — Fast active orbiting and morphing */
+.hero-gradient-layer-3d-spheres {
+  background:
+    radial-gradient(
+      circle 55vw at 25% 25%,
+      rgba(150, 132, 156, 0.92) 0%,
+      rgba(179, 148, 153, 0.55) 40%,
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 50vw at 75% 45%,
+      rgba(233, 165, 125, 0.88) 0%,
+      rgba(244, 160, 106, 0.52) 42%,
+      transparent 75%
+    ),
+    radial-gradient(
+      circle 58vw at 45% 80%,
+      rgba(246, 139, 85, 0.92) 0%,
+      rgba(245, 91, 49, 0.70) 45%,
+      transparent 80%
+    );
+  filter: blur(48px);
+  mix-blend-mode: normal;
+  opacity: 0.98;
+  animation: hero3dSphereFloat 2.8s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes hero3dSphereFloat {
+  0% {
+    transform: translate3d(-9%, -7%, 35px) scale(0.94);
+  }
+  50% {
+    transform: translate3d(9%, 7%, -20px) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-6%, 8%, 25px) scale(1.05);
+  }
+}
+
+/* Layer 3: 3D Volumetric Depth & Fast Ambient Light Sheen */
+.hero-gradient-layer-3d-depth {
+  background: radial-gradient(
+    ellipse 75% 65% at 50% 50%,
+    rgba(255, 255, 255, 0.24) 0%,
+    rgba(244, 160, 106, 0.16) 40%,
+    rgba(245, 91, 49, 0.08) 65%,
+    transparent 85%
+  );
+  filter: blur(35px);
+  mix-blend-mode: soft-light;
+  animation: hero3dDepthPulse 2.2s ease-in-out infinite alternate;
+  will-change: transform, opacity;
+}
+
+@keyframes hero3dDepthPulse {
+  0% {
+    opacity: 0.4;
+    transform: scale(0.90) translate3d(-4%, -3%, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.14) translate3d(4%, 3%, 30px);
+  }
+  100% {
+    opacity: 0.55;
+    transform: scale(0.98) translate3d(-2%, 4%, -20px);
+  }
+}
+
+/* Layer 4: Fast Ambient Dynamic Color Orbit */
+.hero-gradient-layer-fast-orbit {
+  background: radial-gradient(
+    circle 48vw at 50% 50%,
+    rgba(245, 91, 49, 0.45) 0%,
+    rgba(246, 139, 85, 0.35) 30%,
+    rgba(150, 132, 156, 0.28) 60%,
+    transparent 80%
+  );
+  filter: blur(45px);
+  mix-blend-mode: screen;
+  animation: heroFastOrbit 3s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes heroFastOrbit {
+  0% {
+    transform: translate3d(-12%, -8%, 0) scale(0.95);
+  }
+  50% {
+    transform: translate3d(14%, 10%, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-8%, 12%, 0) scale(1.02);
+  }
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .hero-gradient-layer-base,
+  .hero-gradient-layer-3d-spheres,
+  .hero-gradient-layer-3d-depth,
+  .hero-gradient-layer-fast-orbit {
+    animation: none !important;
+  }
+}
+
+/* ========================================================
+   BRIGHT HERO & HEADER TYPOGRAPHY
+   High contrast, pure #FFFFFF with subtle architectural shadows
+   ======================================================== */
+
+.hero-headline {
+  color: #FFFFFF;
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  font-size: clamp(2.8rem, 6.2vw, 5.8rem);
+  text-shadow: 0 2px 22px rgba(35, 15, 20, 0.22), 0 1px 6px rgba(0, 0, 0, 0.16);
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.hero-magnify-zone {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32' fill='none'%3E%3Ccircle cx='13.5' cy='13.5' r='9' fill='rgba(255,255,255,0.22)' stroke='white' stroke-width='2.4'/%3E%3Cpath d='M13.5 9.5V17.5M9.5 13.5H17.5' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M20.2 20.2L27.5 27.5' stroke='white' stroke-width='2.8' stroke-linecap='round'/%3E%3C/svg%3E") 13 13, zoom-in;
+}
+
+.hero-word {
+  display: inline-block;
+  transform-origin: center center;
+  will-change: transform, opacity, filter;
+  cursor: inherit;
+  touch-action: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-word,
+  .hero-headline,
+  .hero-subtitle-bright {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+.hero-subtitle-bright {
+  color: #FFFFFF;
+  font-weight: 450;
+  opacity: 1;
+  text-shadow: 0 2px 16px rgba(35, 15, 20, 0.24);
+}
+
+.header-logo {
+  color: #FFFFFF;
+  font-weight: 600;
+  opacity: 1;
+  text-shadow: 0 1px 12px rgba(45, 28, 16, 0.26);
+}
+
+.header-nav-link {
+  color: #FFFFFF;
+  font-weight: 500;
+  opacity: 1;
+  text-shadow: 0 1px 10px rgba(45, 28, 16, 0.24);
+  transition: color 200ms ease, text-shadow 200ms ease;
+}
+
+.header-nav-link:hover {
+  color: #FFFFFF;
+  text-shadow: 0 0 14px rgba(245, 91, 49, 0.85), 0 1px 8px rgba(45, 28, 16, 0.35);
+}
+
+/* Warm shadow helper for crisp white & cream headings on #B2967D camel */
+.camel-heading-shadow {
+  text-shadow: 0 2px 18px rgba(54, 36, 22, 0.22), 0 1px 4px rgba(54, 36, 22, 0.14);
+}
+
+.camel-subtext-shadow {
+  text-shadow: 0 1px 12px rgba(54, 36, 22, 0.18);
+}
+
+/* Hero Product Plate — White Glassmorphism Frame with Edge-to-Edge Video */
+.hero-product-plate {
+  position: relative;
+  width: min(38vw, 460px);
+  aspect-ratio: 4 / 5;
+  padding: 0;
+  overflow: hidden;
+
+  background: rgba(255, 255, 255, 0.20);
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: 28px;
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  box-shadow: 0 18px 55px rgba(70, 40, 45, 0.16);
+  isolation: isolate;
+}
+
+@media (max-width: 1024px) {
+  .hero-product-plate {
+    width: min(88vw, 420px);
+    aspect-ratio: 4 / 4.6;
+    border-radius: 24px;
+    padding: 0;
+  }
+}
+
+/* Architectural Camel Section (#B2967D) with persistent scroll-responsive coral-red gradient orb */
+.dark-section {
+  position: relative;
+  isolation: isolate;
+  background: #B2967D;
+  color: #FFFFFF;
+}
+
+.dark-gradient-orb {
+  position: fixed;
+  top: 6vh;
+  left: 6vw;
+
+  width: clamp(380px, 46vw, 700px);
+  aspect-ratio: 1;
+
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(245, 91, 49, 0.72) 0%,
+    rgba(245, 91, 49, 0.46) 30%,
+    rgba(246, 139, 85, 0.26) 54%,
+    rgba(245, 91, 49, 0.08) 74%,
+    transparent 88%
+  );
+
+  filter: blur(58px);
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform, opacity;
+  opacity: 0;
+}
+
+/* Alabaster & Ivory Category Filter Tab */
+.glass-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 12px 19px;
+  border-radius: 999px;
+
+  background: rgba(250, 247, 242, 0.92);
+  border: 1px solid rgba(58, 38, 24, 0.12);
+
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+
+  color: #231C16;
+  box-shadow: 0 4px 14px rgba(54, 36, 22, 0.08);
+
+  transition:
+    background 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-tab:hover {
+  background: #FFFFFF;
+  border-color: rgba(245, 91, 49, 0.55);
+  transform: translateY(-2px);
+  color: #D94E28;
+  box-shadow: 0 8px 22px rgba(54, 36, 22, 0.12);
+}
+
+.glass-tab.active {
+  background: #F55B31;
+  border-color: #F55B31;
+  color: #FFFFFF;
+  box-shadow: 0 6px 22px rgba(245, 91, 49, 0.32);
+}
+
+/* Alabaster surface panel */
+.glass-panel {
+  background: #FAF7F2;
+  border: 1px solid rgba(58, 38, 24, 0.10);
+  box-shadow: 0 12px 32px rgba(54, 36, 22, 0.08);
+}
+
+.glass-panel:hover {
+  border-color: rgba(245, 91, 49, 0.40);
+}
+
+/* Hide horizontal scrollbar while keeping scrolling functional */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
